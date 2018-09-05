@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:c="http://www.springframework.org/schema/c" xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+http://www.springframework.org/schema/context 
+http://www.springframework.org/schema/context/spring-context-3.0.xsd 
+http://www.springframework.org/schema/task 
+http://www.springframework.org/schema/task/spring-task-3.0.xsd 
+http://www.springframework.org/schema/aop 
+http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+">
+	<context:component-scan base-package="com.app" />
+	<bean class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+		name="dsObj" p:driverClassName="oracle.jdbc.driver.OracleDriver"
+		p:url="jdbc:oracle:thin:@localhost:1521:XE" p:username="system"
+		p:password="manager" />
+	<bean
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean"
+		name="sfObj">
+		<property name="dataSource" ref="dsObj" />
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.OracleDialect</prop>
+				<prop key="hibernate-show.sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+		<property name="annotatedClasses">
+			<list>
+				
+				<value>com.app.models.Document</value>
+				<value>com.app.models.Location</value>
+				<value>com.app.models.Vendor</value>
+				<value>com.app.models.Item</value>
+				<value>com.app.models.Customer</value>
+				<value>com.app.models.Order</value>
+				<value>com.app.models.User</value>
+			</list>
+		</property>
+	</bean>
+	<bean class="org.springframework.orm.hibernate3.HibernateTemplate"
+		p:sessionFactory-ref="sfObj" />
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+		p:prefix="/WEB-INF/jsps/" p:suffix=".jsp" />
+
+	<bean
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver"
+		name="multipartResolver" p:maxUploadSize="20971520000" p:maxInMemorySize="1048576000" />
+
+
+	<bean class="org.springframework.web.servlet.view.XmlViewResolver">
+		<property name="order" value="0" />
+		<property name="location">
+			<value>/WEB-INF/spring-views.xml</value>
+		</property>
+	</bean>
+	<bean class="org.springframework.mail.javamail.JavaMailSenderImpl"
+		name="mailSender" p:host="smtp.gmail.com" p:port="587"
+		p:username="bookmyshow417@gmail.com" p:password="myshow417">
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.smtp.auth">true</prop>
+				<prop key="mail.smtp.starttls.enable">true</prop>
+			</props>
+		</property>
+	</bean>
+</beans>
